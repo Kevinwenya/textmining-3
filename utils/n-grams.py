@@ -37,4 +37,40 @@ def most_frequent_n_grams(n, f, q):
     for ngram, freq in heapq.nlargest(q, ngrams.iteritems(), 
                                       key=lambda (k, v): (v, k)):
         results[ngram] = freq
+        print " ".join(ngram)+", "+str(freq)
     return results
+
+
+def most_frequent_phrases(min_n_gram, max_n_gram, file_name, how_many):
+    tmp_results = dict()
+    for n in range(min_n_gram,max_n_gram+1):
+        tmp_results.update(most_frequent_n_grams(n, file_name, how_many))
+        most_frequent_phrases = dict()
+        # We want to get rid of the shorter n-gram if it has same support
+        # First, sort the n-grams
+        l = []
+        for ngram, freq in tmp_results.iteritems():
+            l.append(ngram)
+            l = sorted(l, key=lambda tup: tup[0])
+        # Next, compare and trim
+        prev_ngram = None
+        for ngram in l:
+            print ngram
+            if prev_ngram is not None:
+                prev_ngram_freq = tmp_results[prev_ngram]
+                curr_ngram_freq = tmp_results[ngram]
+                if prev_ngram_freq == curr_ngram_freq:
+                    print("==> '%s' has same frequency (%s) as '%s', so deleting the shorter n-gram" %\
+                    (" ".join(prev_ngram), prev_ngram_freq, " ".join(ngram)) )
+                    del tmp_results[prev_ngram]
+            prev_ngram = ngram
+
+    print "====== most frequent phrases ======"
+    for ngram, freq in heapq.nlargest(how_many, tmp_results.iteritems(), key=lambda (k, v): (v, k)):
+        print " ".join(ngram), freq
+        most_frequent_phrases[ngram] = freq
+
+    return most_frequent_phrases
+
+#most_frequent_n_grams(7, "C:/nirmalya/dev/projects/textmining/paper-abstracts.txt", 15)
+most_frequent_phrases(6,24,"C:/nirmalya/dev/projects/textmining/paper-abstracts.txt", 20)
