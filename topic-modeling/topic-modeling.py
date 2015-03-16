@@ -67,8 +67,9 @@ corpus.dictionary.save('testdictionary3.dict')# store the dictionary, for future
 for vector in corpus:
     print vector
 
-# Print out the topics for LSA
+# Topics identified by LSI model
 # Credit : http://stackoverflow.com/q/15016025
+print "Topics identified by the LSI model"
 lsi = models.LsiModel(corpus, id2word=corpus.dictionary, num_topics=2)
 corpus_lsi = lsi[corpus]
 for l,t in itertools.izip(corpus_lsi,corpus):
@@ -77,3 +78,15 @@ print
 for top in lsi.print_topics(2):
   print top
   print "------"
+corpus_lsi = None
+
+# Topics identified by the LDA model
+print "Topics identified by the LDA model"
+lda = models.LdaModel(corpus, id2word=corpus.dictionary, num_topics=2)
+corpus_lda = lda[corpus]
+for l,t in itertools.izip(corpus_lda,corpus):
+  print l,"#",t
+print
+for i in range(0, lda.num_topics):
+    print lda.print_topic(i)
+    print "------"
