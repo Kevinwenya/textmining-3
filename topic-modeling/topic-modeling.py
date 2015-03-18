@@ -5,11 +5,12 @@ Created on Tue Mar 17 04:53:18 2015
 @author: Nirmalya Ghosh
 """
 
-from gensim import corpora, models, utils
+from gensim import corpora, models, parsing, utils
 import itertools, os
 
-stoplist = set('for a of the and to in'.split())
-# Alternatively, use gensim.parsing.preprocessing.STOPWRORDS
+stoplist = set('for a of the and to in is we this are'.split())
+stoplist.update(parsing.preprocessing.STOPWORDS)
+
 
 def iter_documents(top_directory):
     """
@@ -70,7 +71,7 @@ for vector in corpus:
 # Topics identified by LSI model
 # Credit : http://stackoverflow.com/q/15016025
 print "Topics identified by the LSI model"
-lsi = models.LsiModel(corpus, id2word=corpus.dictionary, num_topics=2)
+lsi = models.LsiModel(corpus, id2word=corpus.dictionary, num_topics=5)
 corpus_lsi = lsi[corpus]
 for l,t in itertools.izip(corpus_lsi,corpus):
   print l,"#",t
@@ -82,7 +83,8 @@ corpus_lsi = None
 
 # Topics identified by the LDA model
 print "Topics identified by the LDA model"
-lda = models.LdaModel(corpus, id2word=corpus.dictionary, num_topics=2)
+lda = models.LdaModel(corpus, id2word=corpus.dictionary, num_topics=5, 
+                      alpha='auto', update_every=0, passes=20)
 corpus_lda = lda[corpus]
 for l,t in itertools.izip(corpus_lda,corpus):
   print l,"#",t
